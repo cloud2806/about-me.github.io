@@ -5,29 +5,15 @@ const sync = require('browser-sync').create();
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 const del = require('del');
+const nodemon = require('gulp-nodemon');
 
-function generateHTML(cb) {
+function generateHTML() {
     return src('./views/pages/*.ejs').pipe(ejs({title: 'title'})).pipe(rename({
         extname: '.html',
     })).pipe(dest('dist/views/pages'));
 }
 
-function watchFiles(cb) {
-    watch('./views/**.ejs', generateHTML);
-}
-
-function browserSync() {
-    sync.init({
-        server: {
-            baseDir: './public',
-        },
-    });
-
-    watch('./views/**/*.ejs', generateHTML);
-    watch('./dist/**/*.html').on('change', sync.reload);
-}
-
-function generateJs(cb) {
+function generateJs() {
     return src('src/*.js').
         pipe(babel()).
         pipe(uglify()).
@@ -35,14 +21,38 @@ function generateJs(cb) {
         pipe(dest('dist/src/'));
 }
 
+function watchFiles(cb) {
+    watch('./views/**/*.ejs', generateHTML);
+    watch('./src/**/*.js', generateJs);
+    cb();
+}
+
+function browserSync() {
+    sync.init(null, {proxy: 'http://localhost:8080'});
+
+    watch('./dist/**/*.html').on('change', sync.reload);
+
+    watch('./dist/**/*.js').on('change', sync.reload);
+}
+
 function clean() {
     return del('dist/**', {force: true});
 }
 
+function nodemonTask(cb) {
+    let callbackCalled = false;
+    return nodemon({script: './dist/src/server.min.js'}).on('start', function() {
+        if (!callbackCalled) {
+            callbackCalled = true;
+            cb();
+        }
+    });
+}
+
 exports.html = generateHTML;
 exports.watch = watchFiles;
-exports.sync = browserSync;
 exports.js = generateJs;
 exports.clean = clean;
 
 exports.default = series(clean, parallel(generateHTML, generateJs));
+exports.sync = series(watchFiles, nodemonTask, browserSync);
