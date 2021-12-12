@@ -7,7 +7,7 @@
     "node": "16.*"
   },
   "scripts": {
-    "start": "node src/server.js",
+    "start": "gulp sync",
     "build": "gulp",
     "start:prod": "npm run build && node dist/src/server.min.js"
   },
