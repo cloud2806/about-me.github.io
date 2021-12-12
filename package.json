@@ -7,7 +7,9 @@
     "node": "16.*"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "build": "gulp",
+    "start:prod": "npm run build && node dist/src/server.min.js"
   },
   "keywords": [],
   "author": "",
