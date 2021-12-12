@@ -30,9 +30,9 @@ function watchFiles(cb) {
 function browserSync() {
     sync.init(null, {proxy: 'http://localhost:8080'});
 
-    watch('./dist/**/*.html').on('change', sync.reload);
+    watch('./dist/views/**/*.html').on('change', sync.reload);
 
-    watch('./dist/**/*.js').on('change', sync.reload);
+    watch('./dist/src/**/*.js').on('change', sync.reload);
 }
 
 function clean() {

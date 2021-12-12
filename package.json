@@ -7,9 +7,9 @@
     "node": "16.*"
   },
   "scripts": {
-    "start": "gulp sync",
     "build": "gulp",
-    "start:prod": "npm run build && node dist/src/server.min.js"
+    "start:local": "gulp sync",
+    "start": "npm run build && node dist/src/server.min.js"
   },
   "keywords": [],
   "author": "",
