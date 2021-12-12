@@ -5,5 +5,3 @@
 
 ###Run prod
 * npm run start:prod
-
-###End
